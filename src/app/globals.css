@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -9,6 +9,7 @@
     --foreground: #ededed;
   }
 }
+
 
 html,
 body {
@@ -40,3 +41,14 @@ a {
     color-scheme: dark;
   }
 }
+
+
+.tables{
+  display: flex;
+  gap: 2rem;
+}
+.filtres{
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+} */
