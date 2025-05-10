@@ -383,7 +383,22 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
               <TableBody>
                 {displayedData.map((item, index) => (
                   <TableRow key={index}>
-                    <TableCell>{item.prenoms}</TableCell>
+                    <TableCell>
+                      <a
+                        href={`https://prenomsgenie.fr/prenom/${encodeURIComponent(
+                          item.prenoms
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          textDecoration: "none",
+                          color: "#1976d2",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {item.prenoms}
+                      </a>
+                    </TableCell>
                     <TableCell>{item.sexe}</TableCell>
                     <TableCell>{item.annee}</TableCell>
                     <TableCell>{item.nombre_total_cumule}</TableCell>
