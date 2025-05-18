@@ -131,7 +131,7 @@ const FiltreTableau = () => {
 const t = (key: TranslationKey) => translations[langue][key] || key;
 
   const [filters, setFilters] = useState<Filters>({
-    sexe: "F",
+    sexe: "M",
     annee: "",
     nombre_total_cumule: "",
     prenomSearch: "",
