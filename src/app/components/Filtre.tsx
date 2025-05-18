@@ -36,6 +36,7 @@ type TranslationKey =
   | "Se termine par"
   | "Pas de doublons"
   | "Ignorer les accents"
+  | "Ignorer les limites"
   | "enregistrement trouvé"
   | "enregistrements trouvés"
   | "Limité à 500 résultats."
@@ -66,6 +67,7 @@ type Filters = {
   seTerminePar: string;
   noDuplicates: boolean;
   ignoreAccents: boolean;
+  ignoreLimites: boolean;
 };
 
 type SortConfig = {
@@ -86,6 +88,7 @@ const translations: Record<"fr" | "ru", Record<TranslationKey, string>> = {
     "Se termine par": "Se termine par",
     "Pas de doublons": "Pas de doublons",
     "Ignorer les accents": "Ignorer les accents",
+    "Ignorer les limites": "Ignorer les limites",
     "enregistrement trouvé": "enregistrement trouvé",
     "enregistrements trouvés": "enregistrements trouvés",
     "Limité à 500 résultats.": "Limité à 500 résultats.",
@@ -108,6 +111,7 @@ const translations: Record<"fr" | "ru", Record<TranslationKey, string>> = {
     "Se termine par": "Заканчивается на",
     "Pas de doublons": "Без дубликатов",
     "Ignorer les accents": "Игнорировать акценты",
+    "Ignorer les limites": "Игнорировать limites",
     "enregistrement trouvé": "запись найдена",
     "enregistrements trouvés": "записей найдено",
     "Limité à 500 résultats.": "Ограничено 500 результатами.",
@@ -127,15 +131,16 @@ const FiltreTableau = () => {
 const t = (key: TranslationKey) => translations[langue][key] || key;
 
   const [filters, setFilters] = useState<Filters>({
-    sexe: "",
+    sexe: "F",
     annee: "",
     nombre_total_cumule: "",
     prenomSearch: "",
     longueur: "",
     commencePar: "",
     seTerminePar: "",
-    noDuplicates: false,
+    noDuplicates: true,
     ignoreAccents: false,
+    ignoreLimites: false,
   });
 
   const [sortConfig, setSortConfig] = useState<SortConfig>({
@@ -248,7 +253,7 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
     }
   });
 
-  const displayedData = sortedData.slice(0, 500);
+  const displayedData = filters.ignoreLimites?sortedData:sortedData.slice(0, 500);
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -347,6 +352,16 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
                 {t("Ignorer les accents")}
               </Typography>
             </FormControl>
+            <FormControl>
+              <Checkbox
+                name="ignoreLimites"
+                checked={filters.ignoreLimites}
+                onChange={handleChange}
+              />
+              <Typography variant="caption">
+                {t("Ignorer les limites")}
+              </Typography>
+            </FormControl>
           </Stack>
           <Typography variant="body2" mb={1}>
             {filteredData.length}{" "}
@@ -354,7 +369,7 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
               ? t("enregistrement trouvé")
               : t("enregistrements trouvés")}
           </Typography>
-          {sortedData.length > 500 && (
+          {sortedData.length > 500 && !filters.ignoreLimites && (
             <Typography variant="body2" mb={1}>
               {t("Limité à 500 résultats.")}
             </Typography>
