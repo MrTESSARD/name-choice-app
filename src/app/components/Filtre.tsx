@@ -445,7 +445,21 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
                 key={prenom}
                 className="flex justify-between items-center mb-1"
               >
-                {prenom}
+  <a
+                        href={`https://prenomsgenie.fr/prenom/${encodeURIComponent(
+                          prenom
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          textDecoration: "none",
+                          color: "#1976d2",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {prenom}
+                      </a>
+                
                 <button
                   className="text-red-500 text-sm"
                   onClick={() => updateFavoris(prenom)}
