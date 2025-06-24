@@ -449,7 +449,7 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
                         href={`https://prenomsgenie.fr/prenom/${encodeURIComponent(
                           prenom
                         )}`}
-                        target="_blank"
+                        
                         rel="noopener noreferrer"
                         style={{
                           textDecoration: "none",
