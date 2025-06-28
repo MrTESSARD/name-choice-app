@@ -459,7 +459,6 @@ let filteredData = normalizedData.filter((item) => {
                         href={`https://prenomsgenie.fr/prenom/${encodeURIComponent(
                           item.prenoms
                         )}`}
-                        target="_blank"
                         rel="noopener noreferrer"
                         style={{
                           textDecoration: "none",
@@ -503,21 +502,20 @@ let filteredData = normalizedData.filter((item) => {
                 key={prenom}
                 className="flex justify-between items-center mb-1"
               >
-  <a
-                        href={`https://prenomsgenie.fr/prenom/${encodeURIComponent(
-                          prenom
-                        )}`}
-                        
-                        rel="noopener noreferrer"
-                        style={{
-                          textDecoration: "none",
-                          color: "#1976d2",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {prenom}
-                      </a>
-                
+                <a
+                  href={`https://prenomsgenie.fr/prenom/${encodeURIComponent(
+                    prenom
+                  )}`}
+                  rel="noopener noreferrer"
+                  style={{
+                    textDecoration: "none",
+                    color: "#1976d2",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {prenom}
+                </a>
+
                 <button
                   className="text-red-500 text-sm"
                   onClick={() => updateFavoris(prenom)}
