@@ -2,6 +2,7 @@
 
 import { useEffect, useState, ChangeEvent } from "react";
 import data from "@/app/components/liste_des_prenoms.json";
+import allData from "@/app/components/all.json";
 import {
   Box,
   Checkbox,
@@ -51,7 +52,7 @@ type TranslationKey =
 // 🔠 Type des objets dans la liste
 type PrenomData = {
   nombre: number;
-  sexe: "F" | "M";
+  sexe: "F" | "M" | "unknown";
   annee: string;
   prenoms: string;
   nombre_total_cumule: number;
@@ -127,6 +128,10 @@ const translations: Record<"fr" | "ru", Record<TranslationKey, string>> = {
 
 const FiltreTableau = () => {
   const [langue, setLangue] = useState<"fr" | "ru">("fr");
+  
+  const [sourceType, setSourceType] = useState<"json" | "txt">("json");
+  const [txtPrenoms, setTxtPrenoms] = useState<string[]>([]);
+
 
 const t = (key: TranslationKey) => translations[langue][key] || key;
 
@@ -160,6 +165,30 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
     if (saved) setFavoris(JSON.parse(saved));
   }, []);
 
+
+
+  useEffect(() => {
+    if (sourceType === "txt") {
+      
+          setTxtPrenoms(allData);
+       
+    }
+  }, [sourceType]);
+
+
+const normalizedData: PrenomData[] =
+  sourceType === "json"
+    ? (data as PrenomData[])
+    : txtPrenoms.map((prenom) => ({
+        prenoms: prenom,
+        sexe: "unknown", // inconnu
+        annee: "unknown", // inconnu
+        nombre: 1,
+        nombre_total_cumule: 1,
+      }));
+  
+console.log("txtPrenoms", txtPrenoms);
+console.log("normalizedData", normalizedData);
   const updateFavoris = (prenom: string) => {
     const updated = favoris.includes(prenom)
       ? favoris.filter((p) => p !== prenom)
@@ -182,7 +211,7 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
     return regex.test(text);
   };
 
-  let filteredData = (data as PrenomData[]).filter((item) => {
+let filteredData = normalizedData.filter((item) => {
     const normalize = (str: string) => {
       return filters.ignoreAccents
         ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -190,7 +219,9 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
     };
 
     return (
-      (filters.sexe === "" || item.sexe === filters.sexe) &&
+      (filters.sexe === "unknown" ||
+        // item.sexe === "unknown" ||
+        item.sexe === filters.sexe) &&
       (filters.annee === "" || item.annee === filters.annee) &&
       (filters.nombre_total_cumule === "" ||
         item.nombre_total_cumule === parseInt(filters.nombre_total_cumule)) &&
@@ -258,6 +289,31 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box mb={2}>
+        <FormControl component="fieldset">
+          <Typography variant="caption">Source de données</Typography>
+          <Stack direction="row">
+            <label>
+              <input
+                type="radio"
+                value="json"
+                checked={sourceType === "json"}
+                onChange={() => setSourceType("json")}
+              />
+              Paris Database
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="txt"
+                checked={sourceType === "txt"}
+                onChange={() => setSourceType("txt")}
+              />
+              World
+            </label>
+          </Stack>
+        </FormControl>
+      </Box>
+      <Box mb={2}>
         <FormControl size="small" sx={{ minWidth: 120 }}>
           <InputLabel>{t("Langue")}</InputLabel>
           <Select
@@ -281,7 +337,7 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
                 onChange={handleChange}
                 label={t("Sexe")}
               >
-                <MenuItem value="">{t("Tous")}</MenuItem>
+                <MenuItem value="unknown">{t("Tous")}</MenuItem>
                 <MenuItem value="F">F</MenuItem>
                 <MenuItem value="M">M</MenuItem>
               </Select>
@@ -414,9 +470,11 @@ const t = (key: TranslationKey) => translations[langue][key] || key;
                         {item.prenoms}
                       </a>
                     </TableCell>
+
                     <TableCell>{item.sexe}</TableCell>
                     <TableCell>{item.annee}</TableCell>
                     <TableCell>{item.nombre_total_cumule}</TableCell>
+
                     <TableCell>
                       <IconButton
                         onClick={() => updateFavoris(item.prenoms)}
